@@ -3,6 +3,7 @@
 
   const object1 = reactive({
     hoge: 0,
+    fuga: 1,
   });
 
   const object2 = reactive({
@@ -17,6 +18,11 @@
     console.log("effect2...", object2.hoge)
   })
 
+  effect(() => {
+    console.log("effect3...", object1.hoge)
+  })
+
   object1.hoge = 1;
   object2.hoge = 2;
+  object1.fuga = 3;
 </script>

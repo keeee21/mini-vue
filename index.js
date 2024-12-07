@@ -2,14 +2,14 @@ const handler = {
   get(target, key, receiver) {
     const res = Reflect.get(target, key, receiver);
     // アクセスされたobjectがtargetという変数で渡ってくる
-    console.log("get", target, key, res);
-    track(target);
+    console.log("get:", target, "key:" + key, "res:" + res);
+    track(target, key);
     return res;
   },
   set(target, key, value, receiver) {
     const res = Reflect.set(target, key, value, receiver);
-    console.log("set", target, key, value);
-    trigger(target);
+    console.log("set:", target, "key:" + key, "value:" + value);
+    trigger(target, key);
     return res;
   }
 }
@@ -23,17 +23,28 @@ let activeEffect = null;
 const effect = (fn) => {
   activeEffect = fn;
   activeEffect();
+  activeEffect = null;
 }
 
 // objectとcallbackを関連付ける
 const targetMap = new WeakMap();
-const track = (target) => {
+const track = (target, key) => {
   console.log("track", target, "activeEffect", activeEffect);
-  targetMap.set(target, activeEffect);
+  let dependencyMap = targetMap.get(target);
+
+  if (!dependencyMap) {
+    dependencyMap = new Map();
+    targetMap.set(target, dependencyMap);
+  } 
+
+  dependencyMap.set(key, activeEffect);
 }
 
-const trigger = (target) => {
-  const effect = targetMap.get(target);
+const trigger = (target, key) => {
+  const dependencyMap = targetMap.get(target);
+  if (!dependencyMap) return;
+
+  const effect = dependencyMap.get(key);
   effect();
 }
 
