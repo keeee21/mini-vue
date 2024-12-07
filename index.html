@@ -1,0 +1,14 @@
+<script type="module">
+  import { effect, trigger, reactive } from './index.js';
+
+  const object = reactive({
+    hoge: 0,
+  });
+
+  effect(() => {
+    console.log(object.hoge)
+  })
+
+  object.hoge = 1;
+  object.hoge = 2;
+</script>
