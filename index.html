@@ -1,14 +1,22 @@
 <script type="module">
   import { effect, trigger, reactive } from './index.js';
 
-  const object = reactive({
+  const object1 = reactive({
+    hoge: 0,
+  });
+
+  const object2 = reactive({
     hoge: 0,
   });
 
   effect(() => {
-    console.log(object.hoge)
+    console.log("effect1...", object1.hoge)
   })
 
-  object.hoge = 1;
-  object.hoge = 2;
+  effect(() => {
+    console.log("effect2...", object2.hoge)
+  })
+
+  object1.hoge = 1;
+  object2.hoge = 2;
 </script>
